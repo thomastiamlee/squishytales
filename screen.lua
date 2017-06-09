@@ -25,9 +25,18 @@ ScreenManager = {
 			self.activeScreen = self:getscreen(name)
 		end
 	end,
+	update = function(self)
+		if self.activeScreen then
+			if self.activeScreen.update then
+				self.activeScreen:update()
+			end
+		end
+	end,
 	draw = function(self)
 		if self.activeScreen then
-			self.activeScreen:draw()
+			if self.activeScreen.draw then
+				self.activeScreen:draw()
+			end
 		end
 	end
 }

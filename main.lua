@@ -17,6 +17,10 @@ function love.load()
 	initScreens()
 end
 
+function love.update()
+	screenManager:update()
+end
+
 function love.draw()
 	screenManager:draw()
 end
