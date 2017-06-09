@@ -31,13 +31,21 @@ GameScreen = {
 		self.squishy:update()
 		if self.bubbledata then
 			self.bubbleGrowScale = self.bubbleGrowSpeed + self.bubbleGrowScale
+			print(self.bubbleGrowScale)
+			if self.bubbleGrowScale > 1.2 then
+				self.bubbledata = false
+			end
 		end
 	end,
 	draw = function(self)
 		self.areadata:drawbackground()
 		self.squishy:drawcenter(screenWidth / 2, screenHeight / 2, 0, self.squishyScale)
 		if self.bubbledata then
-			self.bubble:drawcenter(self.bubbleLoc.x, self.bubbleLoc.y, 0, self.bubbleScale * self.bubbleGrowScale)
+			if self.bubbleGrowScale <= 1 then
+				self.bubble:drawcenter(self.bubbleLoc.x, self.bubbleLoc.y, 0, self.bubbleScale * self.bubbleGrowScale)
+			else
+				self.bubblePop:drawcenter(self.bubbleLoc.x, self.bubbleLoc.y, 0, self.bubbleScale)
+			end
 		end
 	end,
 	mousepressed = function(self, x, y)
@@ -54,7 +62,9 @@ GameScreen = {
 	end,
 	mousemoved = function(self, x, y)
 		if self.bubbledata == true then
-			self.bubbleLoc = {x = x, y = y}
+			if self.bubbleGrowScale <= 1 then
+				self.bubbleLoc = {x = x, y = y}
+			end
 		end
 	end
 }
