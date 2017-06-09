@@ -6,7 +6,9 @@ GameScreen = {
 	bubble = nil,
 	bubblePop = nil,
 	bubbleLoc = nil,
-	bubblestatus = nil,
+	bubbledata = nil,
+	bubbleGrowScale = nil,
+	bubbleGrowSpeed = 0.025,
 	bubbleScale = nil,
 	-- Area data (level specific information)
 	areadata = nil,
@@ -27,17 +29,21 @@ GameScreen = {
 	end,
 	update = function(self)
 		self.squishy:update()
+		if self.bubbledata then
+			self.bubbleGrowScale = self.bubbleGrowSpeed + self.bubbleGrowScale
+		end
 	end,
 	draw = function(self)
 		self.areadata:drawbackground()
 		self.squishy:drawcenter(screenWidth / 2, screenHeight / 2, 0, self.squishyScale)
 		if self.bubbledata then
-			self.bubble:drawcenter(self.bubbleLoc.x, self.bubbleLoc.y, 0, self.bubbleScale)
+			self.bubble:drawcenter(self.bubbleLoc.x, self.bubbleLoc.y, 0, self.bubbleScale * self.bubbleGrowScale)
 		end
 	end,
 	mousepressed = function(self, x, y)
 		if self.bubbledata == false then
 			self.bubbledata = true
+			self.bubbleGrowScale = 0
 			self.bubbleLoc = {x = x, y = y}
 		end
 	end,
