@@ -73,5 +73,20 @@ ScreenManager = {
 	triggerfadeout = function(self)
 		self.fadealpha = 0
 		self.fadestate = "out"
+	end,
+	triggermousepressed = function(self, x, y)
+		if self.activeScreen and self.activeScreen.mousepressed then
+			self.activeScreen:mousepressed(x, y)
+		end
+	end,
+	triggermousereleased = function(self, x, y)
+		if self.activeScreen and self.activeScreen.mousereleased then
+			self.activeScreen:mousereleased(x, y)
+		end
+	end,
+	triggermousemoved = function(self, x, y)
+		if self.activeScreen and self.activeScreen.mousemoved then
+			self.activeScreen:mousemoved(x, y)
+		end
 	end
 }

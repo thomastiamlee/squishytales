@@ -8,6 +8,8 @@ require 'areadata'
 -- Previous timestamp
 prevTime = nil
 elapsedTime = 0
+-- Mouse / touch information
+touchPressed = false
 
 function initScreens()
 	screenManager = ScreenManager:new()
@@ -44,3 +46,15 @@ end
 function love.draw()
 	screenManager:draw()
 end
+
+function love.mousepressed(x, y, button, istouch)
+	screenManager:triggermousepressed(x, y)
+end
+
+function love.mousereleased(x, y, button, istouch)
+	screenManager:triggermousereleased(x, y)
+end
+
+function love.mousemoved(x, y, dx, dy, istouch)
+	screenManager:triggermousemoved(x, y)
+end 
