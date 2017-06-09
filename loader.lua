@@ -4,6 +4,9 @@ function loadResources()
 	loveLogoImage = love.graphics.newImage("assets/love-bubble.png")
 	excelsiorLogoImage = love.graphics.newImage("assets/excelsior-bubble.png")
 	menuBgImage = love.graphics.newImage("assets/menuback.png")
+	seafloorBackImage = love.graphics.newImage("assets/seafloor-back.png")
+	seafloorMiddleImage = love.graphics.newImage("assets/seafloor-middle.png")
+	seafloorFrontImage = love.graphics.newImage("assets/seafloor-front.png")
 	-- Fonts
 	quicksandFont = love.graphics.newFont("assets/quicksand.otf", 24)
 	-- Audio

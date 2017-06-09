@@ -3,6 +3,7 @@ require 'sprite'
 require 'screen'
 require 'introscreen'
 require 'gamescreen'
+require 'areadata'
 
 -- Previous timestamp
 prevTime = nil
@@ -15,7 +16,9 @@ function initScreens()
 	screenManager:addscreen(introScreen, "intro")
 	screenManager:addscreen(gameScreen, "game")
 	
-	screenManager:transition("game")
+	seafloorAreaData = SeafloorAreaData:new()
+	
+	screenManager:transition("game", {areadata = seafloorAreaData})
 end
 
 function love.load()

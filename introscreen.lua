@@ -9,7 +9,7 @@ IntroScreen = {
 		self.__index = self
 		return o
 	end,
-	init = function(self) 
+	init = function(self, data) 
 		self.excelsiorLogo = Sprite:new(excelsiorLogoImage)
 		self.loveLogo = Sprite:new(loveLogoImage)
 		self.menuBg = Sprite:new(menuBgImage)

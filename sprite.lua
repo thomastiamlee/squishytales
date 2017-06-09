@@ -7,11 +7,13 @@ Sprite = {
 		return o
 	end,
 	draw = function(self, x, y, rotation, scale)
+		love.graphics.setColor(255, 255, 255)
 		rotation = rotation or 0
 		scale = scale or 1
 		love.graphics.draw(self.image, x, y, rotation, scale, scale)
 	end,
 	drawcenter = function(self, x, y, rotation, scale)
+		love.graphics.setColor(255, 255, 255)
 		rotation = rotation or 0
 		scale = scale or 1
 		love.graphics.draw(self.image, x - (self.image):getWidth() * scale / 2, y - (self.image):getHeight() * scale / 2, rotation, scale, scale)

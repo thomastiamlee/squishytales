@@ -20,13 +20,13 @@ ScreenManager = {
 		end
 		return nil
 	end,
-	transition = function(self, name)
+	transition = function(self, name, data)
 		if self.activeScreen then
 		
 		else
 			self.activeScreen = self:getscreen(name)			
 			if self.activeScreen.init then
-				self.activeScreen:init()
+				self.activeScreen:init(data)
 				self:triggerfadein()
 			end
 		end
