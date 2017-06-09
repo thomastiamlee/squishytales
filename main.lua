@@ -1,13 +1,22 @@
 require 'loader'
 require 'sprite'
+require 'screen'
+require 'introscreen'
+
+function initScreens()
+	screenManager = ScreenManager:new()
+	introScreen = IntroScreen:new()
+	screenManager:addscreen(introScreen, "intro")
+	
+	screenManager:transition("intro")
+end
 
 function love.load()
 	loadResources()
 	initGame()
-	
-	a  = Sprite:new(excelsiorLogo)
+	initScreens()
 end
 
 function love.draw()
-	a:drawcenter(screenWidth / 2, screenHeight / 2, 0, 0.3)
+	screenManager:draw()
 end

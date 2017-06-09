@@ -1,8 +1,8 @@
 function loadResources()
 	-- Sheets
-	gameSheet = love.graphics.newImage("assets/game.png")
-	loveLogo = love.graphics.newImage("assets/love.png")
-	excelsiorLogo = love.graphics.newImage("assets/excelsior.png")
+	gameSheetImage = love.graphics.newImage("assets/game.png")
+	loveLogoImage = love.graphics.newImage("assets/love.png")
+	excelsiorLogoImage = love.graphics.newImage("assets/excelsior.png")
 	-- Fonts
 	quicksandFont = love.graphics.newFont("assets/quicksand.otf", 24)
 end
