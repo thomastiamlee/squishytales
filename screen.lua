@@ -22,7 +22,10 @@ ScreenManager = {
 		if self.activeScreen then
 		
 		else
-			self.activeScreen = self:getscreen(name)
+			self.activeScreen = self:getscreen(name)			
+			if self.activeScreen.init then
+				self.activeScreen:init()
+			end
 		end
 	end,
 	update = function(self)
