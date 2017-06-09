@@ -1,6 +1,8 @@
 ScreenManager = {
 	screens = {},
 	activeScreen = nil,
+	fadestate = "none",
+	fadealpha = 255,
 	new = function(self)
 		o = {}
 		setmetatable(o, self)
@@ -25,10 +27,27 @@ ScreenManager = {
 			self.activeScreen = self:getscreen(name)			
 			if self.activeScreen.init then
 				self.activeScreen:init()
+				self:triggerfadein()
 			end
 		end
 	end,
 	update = function(self)
+		-- Update fade
+		if self.fadestate == "in" then
+			self.fadealpha = self.fadealpha - 10
+			if self.fadealpha <= 0 then
+				self.fadestate = "none"
+				self.fadealpha = 0
+			end
+		elseif self.fadestate == "out" then
+			self.fadealpha = self.fadealpha + 10
+			if self.fadealpha >= 255 then
+				self.fadestate = "none"
+				self.fadealpha = 255
+			end
+		end
+				
+		-- Update screen
 		if self.activeScreen then
 			if self.activeScreen.update then
 				self.activeScreen:update()
@@ -41,5 +60,18 @@ ScreenManager = {
 				self.activeScreen:draw()
 			end
 		end
+		self:drawfade()
+	end,
+	drawfade = function(self)
+		love.graphics.setColor(0, 0, 0, self.fadealpha)
+		love.graphics.polygon("fill", 0, 0, screenWidth, 0, screenWidth, screenHeight, 0, screenHeight)
+	end,
+	triggerfadein = function(self)
+		self.fadealpha = 255
+		self.fadestate = "in"
+	end,
+	triggerfadeout = function(self)
+		self.fadealpha = 0
+		self.fadestate = "out"
 	end
 }
