@@ -2,6 +2,7 @@ require 'loader'
 require 'sprite'
 require 'screen'
 require 'introscreen'
+require 'gamescreen'
 
 -- Previous timestamp
 prevTime = nil
@@ -10,9 +11,11 @@ elapsedTime = 0
 function initScreens()
 	screenManager = ScreenManager:new()
 	introScreen = IntroScreen:new()
+	gameScreen = GameScreen:new()
 	screenManager:addscreen(introScreen, "intro")
+	screenManager:addscreen(gameScreen, "game")
 	
-	screenManager:transition("intro")
+	screenManager:transition("game")
 end
 
 function love.load()
