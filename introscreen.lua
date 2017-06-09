@@ -14,6 +14,8 @@ IntroScreen = {
 		self.loveLogo = Sprite:new(loveLogoImage)
 		self.menuBg = Sprite:new(menuBgImage)
 		self.bgScale = screenWidth / (menuBgImage:getWidth() / 2)
+		 
+		love.audio.play(introBgm)
 	end,
 	draw = function(self)
 		love.graphics.setColor(255, 255, 255)

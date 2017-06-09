@@ -6,6 +6,9 @@ function loadResources()
 	menuBgImage = love.graphics.newImage("assets/menuback.png")
 	-- Fonts
 	quicksandFont = love.graphics.newFont("assets/quicksand.otf", 24)
+	-- Audio
+	introBgm = love.audio.newSource("assets/bgm/sunshine.mp3", "stream")
+	introBgm:setVolume(0.05)
 end
 
 function initGame()
