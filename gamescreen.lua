@@ -18,19 +18,62 @@ GameScreen = {
 			vx = 0,
 			vy = 0,
 			friction = 0.05,
+			maxpush = 5,
 			update = function(self)
 				self.image:update()
 				self.x = self.x + self.vx
 				self.y = self.y + self.vy
-				self.vx = math.max(self.vx - self.friction, 0)
-				self.vy = math.max(self.vy - self.friction, 0)
-				
+				if self.vx == 0 then
+					if self.vy > 0 then
+						self.vy = math.max(self.vy - self.friction, 0)
+					else
+						self.vy = math.min(self.vy + self.friction, 0)
+					end
+				else
+					local angle = math.atan(math.abs(self.vy / self.vx))
+					if self.vx > 0 then
+						self.vx = math.max(self.vx - math.cos(angle) * self.friction, 0)	
+					else
+						self.vx = math.min(self.vx + math.cos(angle) * self.friction, 0)
+					end
+					if self.vy > 0 then
+						self.vy = math.max(self.vy - math.sin(angle) * self.friction, 0)
+					else
+						self.vy = math.min(self.vy + math.sin(angle) * self.friction, 0)
+					end
+				end
 			end,
 			draw = function(self)
 				self.image:drawcenter(self.x, self.y, 0, self.scale)
 			end,
-			push = function(self, sx, sy, scale)
-				self.vx = 5
+			push = function(self, sx, sy, scale, growscale)
+				local dist = math.abs(math.sqrt(math.pow(sx - self.x, 2) + math.pow(sy - self.y, 2)))
+				local threshold = 160 * scale * growscale
+				if dist <= threshold then
+					local strength = growscale / 1.25 * self.maxpush
+					if self.y == sy and self.x == sx then
+					
+					elseif self.x == sx then
+						if self.y < sy then
+							self.vy = self.vy - strength
+						else
+							self.vy = self.vy + strength
+						end
+					else	
+						local angle = math.atan(math.abs(self.y - sy) / math.abs(self.x - sx))
+						if self.x < sx then
+							self.vx = self.vx - math.cos(angle) * strength
+						else
+							self.vx = self.vx + math.cos(angle) * strength
+						end
+						if self.y < sy then
+							self.vy = self.vy - math.sin(angle) * strength
+						else
+							self.vy = self.vy + math.sin(angle) * strength
+						end
+					end
+					
+				end
 			end
 		}
 		self.bubble = {
@@ -78,7 +121,7 @@ GameScreen = {
 	end,
 	update = function(self)
 		self.squishy:update()
-		self.bubble:update(function() self.squishy:push(self.bubble.x, self.bubble.y, self.bubble.scale) end)
+		self.bubble:update(function() self.squishy:push(self.bubble.x, self.bubble.y, self.bubble.scale, self.bubble.growscale) end)
 	end,
 	draw = function(self)
 		self.areadata:drawbackground()
@@ -94,7 +137,7 @@ GameScreen = {
 	end,
 	mousereleased = function(self, x, y)
 		if self.bubble.status == "grow" then
-			self.bubble:pop(function() self.squishy:push(self.bubble.x, self.bubble.y, self.bubble.scale) end)
+			self.bubble:pop(function() self.squishy:push(self.bubble.x, self.bubble.y, self.bubble.scale, self.bubble.growscale) end)
 		end
 	end,
 	mousemoved = function(self, x, y)
