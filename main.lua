@@ -20,7 +20,8 @@ function initScreens()
 	
 	seafloorAreaData = SeafloorAreaData:new()
 	
-	screenManager:transition("game", {areadata = seafloorAreaData})
+	-- screenManager:transition("game", {areadata = seafloorAreaData})
+	screenManager:transition("intro", {})
 end
 
 function love.load()
@@ -33,7 +34,7 @@ function love.update()
 	-- Compute elapsed time
 	currTime = love.timer.getTime()
 	if prevTime == nil then
-		elapsedTime = currTime
+		elapsedTime = 0
 		prevTime = currTime
 	else
 		elapsedTime = currTime - prevTime
