@@ -15,14 +15,30 @@ GameScreen = {
 			scale = screenHeight * 0.1 / 75,
 			x = screenWidth / 2,
 			y = screenHeight / 2,
-			vx = 0,
-			vy = 0,
-			friction = 0.05,
-			maxpush = 5,
+			vx = normalize(0),
+			vy = normalize(0),
+			friction = normalize(0.05),
+			maxpush = normalize(6),
 			update = function(self)
 				self.image:update()
-				self.x = self.x + self.vx
-				self.y = self.y + self.vy
+				if self.x + self.vx >= screenWidth - 75 * self.scale / 2 then
+					self.x = screenWidth - 75 * self.scale / 2
+					self.vx = self.vx * -1
+				elseif self.x + self.vx <= 75 * self.scale / 2 then
+					self.x = 75 * self.scale / 2
+					self.vx = self.vx * -1
+				else
+					self.x = self.x + self.vx
+				end
+				if self.y + self.vy >= screenHeight - 25 * self.scale / 2 then
+					self.y = screenHeight - 25 * self.scale / 2
+					self.vy = self.vy * -1
+				elseif self.y + self.vy <= 75 * self.scale / 2 then
+					self.y = 75 * self.scale / 2
+					self.vy = self.vy * -1
+				else
+					self.y = self.y + self.vy
+				end
 				if self.vx == 0 then
 					if self.vy > 0 then
 						self.vy = math.max(self.vy - self.friction, 0)
@@ -72,7 +88,6 @@ GameScreen = {
 							self.vy = self.vy + math.sin(angle) * strength
 						end
 					end
-					
 				end
 			end
 		}
@@ -118,8 +133,10 @@ GameScreen = {
 			end
 		}
 		self.areadata = data.areadata
+		self.areadata:scroll(0)
 	end,
 	update = function(self)
+		self.areadata:update()
 		self.squishy:update()
 		self.bubble:update(function() self.squishy:push(self.bubble.x, self.bubble.y, self.bubble.scale, self.bubble.growscale) end)
 	end,

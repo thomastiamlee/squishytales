@@ -18,7 +18,10 @@ function initGame()
 	-- Background settings
 	love.window.setMode(800, 480)
 	love.graphics.setBackgroundColor(255, 255, 255)
-	-- Global variables
 	screenWidth = love.graphics.getWidth()
 	screenHeight = love.graphics.getHeight()
+end
+
+function normalize(value)
+	return value / 800 * screenWidth
 end
