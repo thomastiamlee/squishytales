@@ -134,6 +134,7 @@ GameScreen = {
 		}
 		self.areadata = data.areadata
 		self.areadata:scroll(0)
+		love.audio.play(self.areadata.music)		
 	end,
 	update = function(self)
 		self.areadata:update()

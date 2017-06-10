@@ -11,7 +11,9 @@ function loadResources()
 	quicksandFont = love.graphics.newFont("assets/quicksand.otf", 24)
 	-- Audio
 	introBgm = love.audio.newSource("assets/bgm/sunshine.mp3", "stream")
-	introBgm:setVolume(0.05)
+	introBgm:setVolume(0.1)
+	seafloorBgm = love.audio.newSource("assets/bgm/wallpaper.mp3", "stream")
+	seafloorBgm:setVolume(0.1)
 end
 
 function initGame()

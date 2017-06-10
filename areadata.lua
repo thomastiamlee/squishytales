@@ -1,4 +1,5 @@
 SeafloorAreaData = {
+	music = nil,
 	backgroundBackSprite = nil,
 	backgroundMiddleSprite = nil,
 	backgroundFrontSprite = nil,
@@ -10,7 +11,8 @@ SeafloorAreaData = {
 			backgroundBackSprite = Sprite:new(seafloorBackImage),
 			backgroundMiddleSprite = Sprite:new(seafloorMiddleImage),
 			backgroundFrontSprite = Sprite:new(seafloorFrontImage),
-			scrollspeed = normalize(0.25)
+			scrollspeed = normalize(0.25),
+			music = seafloorBgm
 		}
 		setmetatable(o, self)
 		self.__index = self
