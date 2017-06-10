@@ -17,13 +17,20 @@ GameScreen = {
 			y = screenHeight / 2,
 			vx = 0,
 			vy = 0,
+			friction = 0.05,
 			update = function(self)
 				self.image:update()
 				self.x = self.x + self.vx
 				self.y = self.y + self.vy
+				self.vx = math.max(self.vx - self.friction, 0)
+				self.vy = math.max(self.vy - self.friction, 0)
+				
 			end,
 			draw = function(self)
 				self.image:drawcenter(self.x, self.y, 0, self.scale)
+			end,
+			push = function(self, sx, sy, scale)
+				self.vx = 5
 			end
 		}
 		self.bubble = {
@@ -46,11 +53,11 @@ GameScreen = {
 				self.status = "pop"
 				callback()
 			end,
-			update = function(self)
+			update = function(self, popcallback)
 				if self.status == "grow" then
 					self.growscale = self.growscale + self.growspeed					
 					if self.growscale >= 1.25 then
-						self:pop(function() end)
+						self:pop(popcallback)
 					end
 				elseif self.status == "pop" then
 					self.currpopduration = self.currpopduration + elapsedTime * 1000
@@ -71,7 +78,7 @@ GameScreen = {
 	end,
 	update = function(self)
 		self.squishy:update()
-		self.bubble:update()
+		self.bubble:update(function() self.squishy:push(self.bubble.x, self.bubble.y, self.bubble.scale) end)
 	end,
 	draw = function(self)
 		self.areadata:drawbackground()
@@ -87,7 +94,7 @@ GameScreen = {
 	end,
 	mousereleased = function(self, x, y)
 		if self.bubble.status == "grow" then
-			self.bubble:pop(function() end)
+			self.bubble:pop(function() self.squishy:push(self.bubble.x, self.bubble.y, self.bubble.scale) end)
 		end
 	end,
 	mousemoved = function(self, x, y)
