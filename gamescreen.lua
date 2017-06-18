@@ -1,6 +1,7 @@
 GameScreen = {
 	squishy = nil,
 	bubble = nil,
+	enemies = {},
 	-- Area data (level specific information)
 	areadata = nil,
 	new = function(self)
@@ -134,17 +135,27 @@ GameScreen = {
 		}
 		self.areadata = data.areadata
 		self.areadata:scroll(0)
+		local grouper = Wildlife:new("grouper")
+		grouper:spawn()
+		table.insert(self.enemies, grouper)
 		love.audio.play(self.areadata.music)		
 	end,
 	update = function(self)
 		self.areadata:update()
 		self.squishy:update()
 		self.bubble:update(function() self.squishy:push(self.bubble.x, self.bubble.y, self.bubble.scale, self.bubble.growscale) end)
+		for i = 1, table.getn(self.enemies), 1 do
+			self.enemies[i].sprite:update()
+			self.enemies[i]:update()
+		end
 	end,
 	draw = function(self)
 		self.areadata:drawbackground()
 		self.squishy:draw()
 		self.bubble:draw()
+		for i = 1, table.getn(self.enemies), 1 do
+			self.enemies[i].sprite:drawcenter(self.enemies[i].x, self.enemies[i].y)
+		end
 	end,
 	mousepressed = function(self, x, y)
 		if self.bubble.status == "none" then

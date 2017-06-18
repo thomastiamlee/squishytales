@@ -1,8 +1,43 @@
+Wildlife = {
+	name = nil,
+	x = nil,
+	y = nil,
+	sprite = nil,
+	scale = nil,
+	hitbox = nil,
+	spawn = nil,
+	update = nil,
+	new = function(self, name)
+		if name == "grouper" then
+			o = {
+				name = "grouper",
+				sprite = MSprite:new(gameSheetImage, 150, 75, 675, 0, 4, 1, 250),
+				scale = normalize(0.75),
+				hitbox = {
+					love.graphics.newQuad(normalize(55), normalize(5), normalize(60), normalize(70), screenWidth, screenHeight),
+					love.graphics.newQuad(normalize(20), normalize(20), normalize(130), normalize(45), screenWidth, screenHeight)
+				},
+				spawn = function(self)
+					self.x = screenWidth / 2
+					self.y = screenHeight / 2
+				end,
+				update = function(self)
+				
+				end
+			}
+		end
+		setmetatable(o, self)
+		self.__index = self
+		return o
+	end
+}
+
 SeafloorAreaData = {
 	music = nil,
 	backgroundBackSprite = nil,
 	backgroundMiddleSprite = nil,
 	backgroundFrontSprite = nil,
+	wildlife = nil,
 	backOffset = 0,
 	scrollspeed = nil,
 	status = "stop",
@@ -12,7 +47,8 @@ SeafloorAreaData = {
 			backgroundMiddleSprite = Sprite:new(seafloorMiddleImage),
 			backgroundFrontSprite = Sprite:new(seafloorFrontImage),
 			scrollspeed = normalize(0.25),
-			music = seafloorBgm
+			music = seafloorBgm,
+			wildlife = {"grouper"}
 		}
 		setmetatable(o, self)
 		self.__index = self

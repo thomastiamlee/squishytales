@@ -20,8 +20,8 @@ function initScreens()
 	
 	seafloorAreaData = SeafloorAreaData:new()
 	
-	-- screenManager:transition("game", {areadata = seafloorAreaData})
-	screenManager:transition("intro", {})
+	screenManager:transition("game", {areadata = seafloorAreaData})
+	-- screenManager:transition("game", {})
 end
 
 function love.load()
