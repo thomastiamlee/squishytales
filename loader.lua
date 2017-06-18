@@ -1,6 +1,7 @@
 function loadResources()
 	-- Sheets
 	gameSheetImage = love.graphics.newImage("assets/game.png")
+	logoImage = love.graphics.newImage("assets/title.png")
 	loveLogoImage = love.graphics.newImage("assets/love-bubble.png")
 	excelsiorLogoImage = love.graphics.newImage("assets/excelsior-bubble.png")
 	menuBgImage = love.graphics.newImage("assets/menuback.png")
@@ -26,4 +27,15 @@ end
 
 function normalize(value)
 	return value / 800 * screenWidth
+end
+
+-- For these easing functions, 
+-- t - current time
+-- b - start value
+-- c - change in value
+-- d - duration
+function easeOutCubicUtility(t, b, c, d)
+	t = t / d
+	t = t - 1
+	return c * (t * t * t + 1) + b
 end
