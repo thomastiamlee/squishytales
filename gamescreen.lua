@@ -4,6 +4,9 @@ GameScreen = {
 	enemies = {},
 	-- Area data (level specific information)
 	areadata = nil,
+	-- Level control
+	spawntime = 5000,
+	currentspawntime = 0,
 	new = function(self)
 		o = {}
 		setmetatable(o, self)
@@ -135,20 +138,16 @@ GameScreen = {
 		}
 		self.areadata = data.areadata
 		self.areadata:scroll(0)
-		local grouper = Wildlife:new("grouper")
-		grouper:spawn()
-		table.insert(self.enemies, grouper)
+		
 		love.audio.play(self.areadata.music)		
 	end,
-	update = function(self)
-		self.areadata:update()
-		self.squishy:update()
-		self.bubble:update(function() self.squishy:push(self.bubble.x, self.bubble.y, self.bubble.scale, self.bubble.growscale) end)
+	handlecollisions = function(self)
 		local sl = self.squishy.x - 32 * self.squishy.scale
 		local sr = self.squishy.x + 32 * self.squishy.scale
 		local su = self.squishy.y - 37 * self.squishy.scale
 		local sd = self.squishy.y + 2 * self.squishy.scale
-		for i = 1, table.getn(self.enemies), 1 do
+		local i = 1
+		while i <= table.getn(self.enemies) do
 			if self.enemies[i].alive == false then
 				table.remove(self.enemies, i)
 				i = i - 1
@@ -171,8 +170,24 @@ GameScreen = {
 				self.enemies[i].sprite:update()
 				self.enemies[i]:update()
 			end
+			i = i + 1
 		end
-		print(table.getn(self.enemies))
+	end,
+	updateenemyspawn = function(self)
+		self.currentspawntime = self.currentspawntime + elapsedTime * 1000
+		if self.currentspawntime >= self.spawntime then
+			local grouper = Wildlife:new("grouper")
+			grouper:spawn()
+			table.insert(self.enemies, grouper)
+			self.currentspawntime = 0
+		end
+	end,
+	update = function(self)
+		self.areadata:update()
+		self.squishy:update()
+		self.bubble:update(function() self.squishy:push(self.bubble.x, self.bubble.y, self.bubble.scale, self.bubble.growscale) end)
+		self:handlecollisions()
+		self:updateenemyspawn()
 	end,
 	draw = function(self)
 		self.areadata:drawbackground()
