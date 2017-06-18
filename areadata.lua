@@ -14,12 +14,12 @@ Wildlife = {
 				sprite = MSprite:new(gameSheetImage, 150, 75, 675, 0, 4, 1, 250),
 				scale = normalize(0.75),
 				hitbox = {
-					love.graphics.newQuad(normalize(55), normalize(5), normalize(60), normalize(70), screenWidth, screenHeight),
-					love.graphics.newQuad(normalize(20), normalize(20), normalize(130), normalize(45), screenWidth, screenHeight)
+					love.graphics.newQuad(55, 5, 60, 70, screenWidth, screenHeight),
+					love.graphics.newQuad(20, 20, 130, 45, screenWidth, screenHeight)
 				},
 				spawn = function(self)
-					self.x = screenWidth / 2
-					self.y = screenHeight / 2
+					self.x = normalize(100)
+					self.y = normalize(200)
 				end,
 				update = function(self)
 				

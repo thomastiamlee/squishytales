@@ -144,18 +144,38 @@ GameScreen = {
 		self.areadata:update()
 		self.squishy:update()
 		self.bubble:update(function() self.squishy:push(self.bubble.x, self.bubble.y, self.bubble.scale, self.bubble.growscale) end)
+		local sl = self.squishy.x - 32 * self.squishy.scale
+		local sr = self.squishy.x + 32 * self.squishy.scale
+		local su = self.squishy.y - 37 * self.squishy.scale
+		local sd = self.squishy.y + 2 * self.squishy.scale
 		for i = 1, table.getn(self.enemies), 1 do
+			local hitboxes = self.enemies[i].hitbox
+			local enemyScale = self.enemies[i].scale
+			local enemyX = self.enemies[i].x - self.enemies[i].sprite.width / 2 * self.enemies[i].scale
+			local enemyY = self.enemies[i].y - self.enemies[i].sprite.height / 2 * self.enemies[i].scale
+			for j = 1, table.getn(hitboxes), 1 do
+				local x, y, w, h = hitboxes[j]:getViewport()
+				local hl = x * enemyScale + enemyX
+				local hr = x * enemyScale + enemyX + w * enemyScale
+				local hu = y * enemyScale + enemyY
+				local hd = y * enemyScale + enemyY + h * enemyScale
+				if not(sr < hl or sl > hr or su > hd or sd < hu) then
+					-- collision
+				end
+			end
+			
 			self.enemies[i].sprite:update()
 			self.enemies[i]:update()
 		end
 	end,
 	draw = function(self)
 		self.areadata:drawbackground()
+		for i = 1, table.getn(self.enemies), 1 do
+			self.enemies[i].sprite:drawcenter(self.enemies[i].x, self.enemies[i].y, 0, self.enemies[i].scale)
+		end
 		self.squishy:draw()
 		self.bubble:draw()
-		for i = 1, table.getn(self.enemies), 1 do
-			self.enemies[i].sprite:drawcenter(self.enemies[i].x, self.enemies[i].y)
-		end
+		self:drawdebug()
 	end,
 	mousepressed = function(self, x, y)
 		if self.bubble.status == "none" then
@@ -173,6 +193,29 @@ GameScreen = {
 		if self.bubble.status == "grow" then
 			self.bubble.x = x
 			self.bubble.y = y
+		end
+	end,
+	drawdebug = function(self)
+		local sl = self.squishy.x - 32 * self.squishy.scale
+		local sr = self.squishy.x + 32 * self.squishy.scale
+		local su = self.squishy.y - 37 * self.squishy.scale
+		local sd = self.squishy.y + 3 * self.squishy.scale
+		for i = 1, table.getn(self.enemies), 1 do
+			local hitboxes = self.enemies[i].hitbox
+			local enemyX = self.enemies[i].x - self.enemies[i].sprite.width / 2 * self.enemies[i].scale
+			local enemyY = self.enemies[i].y - self.enemies[i].sprite.height / 2 * self.enemies[i].scale
+			local enemyScale = self.enemies[i].scale
+			love.graphics.setColor(255, 0, 0, 100)
+			love.graphics.polygon('fill', sl, su, sr, su, sr, sd, sl, sd)
+			for j = 1, table.getn(hitboxes), 1 do
+				local x, y, w, h = hitboxes[j]:getViewport()
+				local hl = x * enemyScale + enemyX
+				local hr = x * enemyScale + enemyX + w * enemyScale
+				local hu = y * enemyScale + enemyY
+				local hd = y * enemyScale + enemyY + h * enemyScale
+				love.graphics.setColor(255, 0, 0, 100)
+				love.graphics.polygon('fill', hl, hu, hr, hu, hr, hd, hl, hd)
+			end
 		end
 	end
 }
