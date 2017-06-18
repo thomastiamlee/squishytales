@@ -7,22 +7,28 @@ Wildlife = {
 	hitbox = nil,
 	spawn = nil,
 	update = nil,
+	alive = nil,
 	new = function(self, name)
 		if name == "grouper" then
+			local scale = 0.75
 			o = {
 				name = "grouper",
 				sprite = MSprite:new(gameSheetImage, 150, 75, 675, 0, 4, 1, 250),
-				scale = normalize(0.75),
+				scale = scale,
 				hitbox = {
 					love.graphics.newQuad(55, 5, 60, 70, screenWidth, screenHeight),
 					love.graphics.newQuad(20, 20, 130, 45, screenWidth, screenHeight)
 				},
+				alive = true,
 				spawn = function(self)
-					self.x = normalize(100)
+					self.x = normalize(screenWidth + 75 * scale)
 					self.y = normalize(200)
 				end,
 				update = function(self)
-				
+					self.x = self.x - 1
+					if self.x < -75 * scale then
+						self.alive = false
+					end
 				end
 			}
 		end

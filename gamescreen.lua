@@ -149,24 +149,30 @@ GameScreen = {
 		local su = self.squishy.y - 37 * self.squishy.scale
 		local sd = self.squishy.y + 2 * self.squishy.scale
 		for i = 1, table.getn(self.enemies), 1 do
-			local hitboxes = self.enemies[i].hitbox
-			local enemyScale = self.enemies[i].scale
-			local enemyX = self.enemies[i].x - self.enemies[i].sprite.width / 2 * self.enemies[i].scale
-			local enemyY = self.enemies[i].y - self.enemies[i].sprite.height / 2 * self.enemies[i].scale
-			for j = 1, table.getn(hitboxes), 1 do
-				local x, y, w, h = hitboxes[j]:getViewport()
-				local hl = x * enemyScale + enemyX
-				local hr = x * enemyScale + enemyX + w * enemyScale
-				local hu = y * enemyScale + enemyY
-				local hd = y * enemyScale + enemyY + h * enemyScale
-				if not(sr < hl or sl > hr or su > hd or sd < hu) then
-					-- collision
+			if self.enemies[i].alive == false then
+				table.remove(self.enemies, i)
+				i = i - 1
+			else 
+				local hitboxes = self.enemies[i].hitbox
+				local enemyScale = self.enemies[i].scale
+				local enemyX = self.enemies[i].x - self.enemies[i].sprite.width / 2 * self.enemies[i].scale
+				local enemyY = self.enemies[i].y - self.enemies[i].sprite.height / 2 * self.enemies[i].scale
+				for j = 1, table.getn(hitboxes), 1 do
+					local x, y, w, h = hitboxes[j]:getViewport()
+					local hl = x * enemyScale + enemyX
+					local hr = x * enemyScale + enemyX + w * enemyScale
+					local hu = y * enemyScale + enemyY
+					local hd = y * enemyScale + enemyY + h * enemyScale
+					if not(sr < hl or sl > hr or su > hd or sd < hu) then
+						-- collision
+					end
 				end
+				
+				self.enemies[i].sprite:update()
+				self.enemies[i]:update()
 			end
-			
-			self.enemies[i].sprite:update()
-			self.enemies[i]:update()
 		end
+		print(table.getn(self.enemies))
 	end,
 	draw = function(self)
 		self.areadata:drawbackground()
@@ -200,13 +206,13 @@ GameScreen = {
 		local sr = self.squishy.x + 32 * self.squishy.scale
 		local su = self.squishy.y - 37 * self.squishy.scale
 		local sd = self.squishy.y + 3 * self.squishy.scale
+		love.graphics.setColor(255, 0, 0, 100)
+		love.graphics.polygon('fill', sl, su, sr, su, sr, sd, sl, sd)
 		for i = 1, table.getn(self.enemies), 1 do
 			local hitboxes = self.enemies[i].hitbox
 			local enemyX = self.enemies[i].x - self.enemies[i].sprite.width / 2 * self.enemies[i].scale
 			local enemyY = self.enemies[i].y - self.enemies[i].sprite.height / 2 * self.enemies[i].scale
 			local enemyScale = self.enemies[i].scale
-			love.graphics.setColor(255, 0, 0, 100)
-			love.graphics.polygon('fill', sl, su, sr, su, sr, sd, sl, sd)
 			for j = 1, table.getn(hitboxes), 1 do
 				local x, y, w, h = hitboxes[j]:getViewport()
 				local hl = x * enemyScale + enemyX

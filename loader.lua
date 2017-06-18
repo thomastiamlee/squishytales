@@ -18,6 +18,7 @@ function loadResources()
 end
 
 function initGame()
+	math.randomseed(os.time())
 	-- Background settings
 	love.window.setMode(800, 480)
 	love.graphics.setBackgroundColor(255, 255, 255)
