@@ -22,7 +22,7 @@ Wildlife = {
 				alive = true,
 				spawn = function(self)
 					self.x = normalize(screenWidth + 75 * scale)
-					self.y = normalize(200)
+					self.y = math.random(80 * scale + (screenHeight - 80 * scale))
 				end,
 				update = function(self)
 					self.x = self.x - 1
