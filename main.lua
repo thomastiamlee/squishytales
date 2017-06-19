@@ -19,8 +19,8 @@ function initScreens()
 	screenManager:addscreen(gameScreen, "game")
 	
 	seafloorAreaData = SeafloorAreaData:new()
-	--screenManager:transition("game", {areadata = seafloorAreaData})
-	screenManager:transition("intro", {})
+	screenManager:transition("game", {areadata = seafloorAreaData})
+	-- screenManager:transition("intro", {})
 end
 
 function love.load()
