@@ -10,11 +10,14 @@ function loadResources()
 	seafloorFrontImage = love.graphics.newImage("assets/seafloor-front.png")
 	-- Fonts
 	quicksandFont = love.graphics.newFont("assets/quicksand.otf", 24)
-	-- Audio
+	-- Music
 	introBgm = love.audio.newSource("assets/bgm/sunshine.mp3", "stream")
 	introBgm:setVolume(0.1)
 	seafloorBgm = love.audio.newSource("assets/bgm/wallpaper.mp3", "stream")
 	seafloorBgm:setVolume(0.1)
+	-- SFX
+	popSfx = love.audio.newSource("assets/sfx/pop.mp3", "static")
+	popSfx:setVolume(1)
 end
 
 function initGame()

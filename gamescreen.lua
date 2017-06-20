@@ -104,14 +104,16 @@ GameScreen = {
 			currpopduration = 0,
 			scale = screenHeight * 0.25 / 225,
 			growscale = 0,
-			growspeed = 0.03,
+			growspeed = 0.025,
 			status = "none",
 			spawn = function(self)
 				self.status = "grow"
-				self.growscale = 0.25
+				self.growscale = 0.5
 				self.currpopduration = 0
 			end,
 			pop = function(self, callback)
+				popSfx:setVolume(math.min(1, self.growscale))
+				popSfx:play()
 				self.status = "pop"
 				callback()
 			end,
@@ -140,7 +142,7 @@ GameScreen = {
 		self.areadata:scroll(0)
 		
 		love.audio.play(self.areadata.music)		
-	end,
+	end,	
 	handlecollisions = function(self)
 		local sl = self.squishy.x - 32 * self.squishy.scale
 		local sr = self.squishy.x + 32 * self.squishy.scale
