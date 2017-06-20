@@ -18,6 +18,10 @@ function loadResources()
 	-- SFX
 	popSfx = love.audio.newSource("assets/sfx/pop.mp3", "static")
 	popSfx:setVolume(1)
+	splatSfx = love.audio.newSource("assets/sfx/splat.mp3", "static")
+	splatSfx:setVolume(0.2)
+	ouchSfx = love.audio.newSource("assets/sfx/ouch.wav", "static")
+	ouchSfx:setVolume(0.2)
 end
 
 function initGame()

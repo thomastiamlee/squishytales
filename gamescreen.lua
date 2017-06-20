@@ -1,12 +1,18 @@
 GameScreen = {
 	squishy = nil,
+	poof = nil,
+	deadsquishy = nil,
 	bubble = nil,
 	enemies = {},
+	gamestate = nil,
 	-- Area data (level specific information)
 	areadata = nil,
 	-- Level control
 	spawntime = 5000,
 	currentspawntime = 0,
+	-- Death animation
+	deathfreezetime = 500,
+	currentdeathfreezetime = nil,
 	new = function(self)
 		o = {}
 		setmetatable(o, self)
@@ -138,6 +144,29 @@ GameScreen = {
 				end
 			end
 		}
+		self.poof = {
+			image = MSprite:new(gameSheetImage, 75, 75, 225, 975, 6, 1, 100),
+			status = "idle",
+			x = nil,
+			y = nil,
+			spawn = function(self, x, y)
+				self.x = x
+				self.y = y
+				self.status = "alive"
+			end,
+			update = function(self)
+				if self.status == "alive" then
+					self.image:update()
+					if self.image.currentFrame == 6 then
+						self.status = "dead"
+					end
+				end
+			end
+		}
+		self.deadsquishy = {
+			image = MSprite:new(gameSheetImage, 75, 75, 300, 1500, 1, 1, 0)
+		}
+		self.gamestate = "playing"
 		self.areadata = data.areadata
 		self.areadata:scroll(0)
 		
@@ -165,7 +194,7 @@ GameScreen = {
 					local hu = y * enemyScale + enemyY
 					local hd = y * enemyScale + enemyY + h * enemyScale
 					if not(sr < hl or sl > hr or su > hd or sd < hu) then
-						-- collision
+						self:triggerdeath()
 					end
 				end
 				
@@ -174,6 +203,13 @@ GameScreen = {
 			end
 			i = i + 1
 		end
+	end,
+	triggerdeath = function(self) 
+		self.bubble.status = "none"
+		self.gamestate = "deathfreeze"
+		splatSfx:play()
+		self.areadata.music:stop()
+		self.currentdeathfreezetime = 0
 	end,
 	updateenemyspawn = function(self)
 		self.currentspawntime = self.currentspawntime + elapsedTime * 1000
@@ -185,37 +221,61 @@ GameScreen = {
 		end
 	end,
 	update = function(self)
-		self.areadata:update()
-		self.squishy:update()
-		self.bubble:update(function() self.squishy:push(self.bubble.x, self.bubble.y, self.bubble.scale, self.bubble.growscale) end)
-		self:handlecollisions()
-		self:updateenemyspawn()
+		if self.gamestate == "playing" then
+			self.areadata:update()
+			self.squishy:update()
+			self.bubble:update(function() self.squishy:push(self.bubble.x, self.bubble.y, self.bubble.scale, self.bubble.growscale) end)
+			self:handlecollisions()
+			self:updateenemyspawn()
+		elseif self.gamestate == "deathfreeze" then
+			self.currentdeathfreezetime = self.currentdeathfreezetime + elapsedTime * 1000
+			if self.currentdeathfreezetime >= self.deathfreezetime then
+				self.gamestate = "deathanimation"
+				self.poof:spawn()
+				ouchSfx:play()
+			end
+		elseif self.gamestate == "deathanimation" then
+			self.poof:update()
+		end
 	end,
 	draw = function(self)
 		self.areadata:drawbackground()
 		for i = 1, table.getn(self.enemies), 1 do
 			self.enemies[i].sprite:drawcenter(self.enemies[i].x, self.enemies[i].y, 0, self.enemies[i].scale)
 		end
-		self.squishy:draw()
+		if self.gamestate == "playing" or self.gamestate == "deathfreeze" then
+			self.squishy:draw()
+		elseif self.gamestate == "deathanimation" then
+			self.deadsquishy.image:drawcenter(self.squishy.x, self.squishy.y, 0, self.squishy.scale)
+		end
 		self.bubble:draw()
-		self:drawdebug()
+		if self.poof.status == "alive" then
+			self.poof.image:drawcenter(self.squishy.x, self.squishy.y, 0, self.squishy.scale)
+		end
+		-- self:drawdebug()
 	end,
 	mousepressed = function(self, x, y)
-		if self.bubble.status == "none" then
-			self.bubble:spawn()
-			self.bubble.x = x
-			self.bubble.y = y
+		if self.gamestate == "playing" then
+			if self.bubble.status == "none" then
+				self.bubble:spawn()
+				self.bubble.x = x
+				self.bubble.y = y
+			end
 		end
 	end,
 	mousereleased = function(self, x, y)
-		if self.bubble.status == "grow" then
-			self.bubble:pop(function() self.squishy:push(self.bubble.x, self.bubble.y, self.bubble.scale, self.bubble.growscale) end)
+		if self.gamestate == "playing" then
+			if self.bubble.status == "grow" then
+				self.bubble:pop(function() self.squishy:push(self.bubble.x, self.bubble.y, self.bubble.scale, self.bubble.growscale) end)
+			end
 		end
 	end,
 	mousemoved = function(self, x, y)
-		if self.bubble.status == "grow" then
-			self.bubble.x = x
-			self.bubble.y = y
+		if self.gamestate == "playing" then
+			if self.bubble.status == "grow" then
+				self.bubble.x = x
+				self.bubble.y = y
+			end
 		end
 	end,
 	drawdebug = function(self)
