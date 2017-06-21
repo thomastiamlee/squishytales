@@ -221,8 +221,26 @@ GameScreen = {
 		end
 		local j = 1
 		while j <= table.getn(self.trashes) do
-			self.trashes[j].sprite:update()
-			self.trashes[j]:update()
+			if self.trashes[j].alive == false then
+				table.remove(self.trashes, j)
+				j = j - 1
+			else 
+				local hitbox = self.trashes[j].hitbox
+				local trashX = self.trashes[j].x - 37 * self.trashes[j].scale
+				local trashY = self.trashes[j].y - 37 * self.trashes[j].scale
+				local x, y, w, h = hitbox:getViewport()
+				local tl = trashX + x * self.trashes[j].scale
+				local tr = trashX + x * self.trashes[j].scale + w * self.trashes[j].scale
+				local tu = trashY + y * self.trashes[j].scale
+				local td = trashY + y * self.trashes[j].scale + h * self.trashes[j].scale
+				
+				if not(sl > tr or sr < tl or su > td or sd < tu) then
+					self.trashes[j]:triggerelectric()
+				end
+				self.trashes[j].sprite:update()
+				self.trashes[j]:update()
+			end
+			
 			j = j + 1
 		end
 	end,
@@ -295,7 +313,7 @@ GameScreen = {
 			self.enemies[i].sprite:drawcenter(self.enemies[i].x, self.enemies[i].y, 0, self.enemies[i].scale)
 		end
 		for i = 1, table.getn(self.trashes), 1 do
-			self.trashes[i].sprite:draw(self.trashes[i].x, self.trashes[i].y, self.trashes[i].rotation, self.trashes[i].scale, 37, 37)
+			self.trashes[i]:draw()
 		end
 		if self.gamestate == "deathanimation" or self.gamestate == "ohnoanimation" then
 			love.graphics.setColor(0, 0, 0, self.fadealpha)

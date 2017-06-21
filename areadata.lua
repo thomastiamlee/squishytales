@@ -2,6 +2,7 @@ Trash = {
 	x = nil,
 	y = nil,
 	sprite = nil,
+	electricsprite = nil,
 	scale = nil,
 	hitbox = nil,
 	update = nil,
@@ -16,11 +17,12 @@ Trash = {
 	falltime = 4500,
 	currentfalltime = 0,
 	newrandom = function(self)
-		randomizer = math.floor(math.random(0, 6.99))
+		randomizer = math.floor(math.random(0, 6))
 		scale = normalize(0.6)
 		o = {
-			falldistance = normalize(200),
-			sprite = MSprite:new(gameSheetImage, 75, 75, 150, randomizer, 1, 1, 0),
+			falldistance = normalize(125),
+			sprite = MSprite:new(gameSheetImage, 75, 75, 150, 75 * randomizer, 1, 1, 0),
+			electricsprite = MSprite:new(gameSheetImage, 75, 75, 225, 525, 6, 1, 100),
 			scale = scale,
 			hitbox = love.graphics.newQuad(5, 5, 65, 65, screenWidth, screenHeight),
 			rotation = 0,
@@ -48,11 +50,28 @@ Trash = {
 						self.currentidletime = 0
 					end
 				elseif self.state == "idle" then
+					if self.y > screenHeight + 75 * self.scale then
+						self.alive = false
+					end
 					self.currentidletime = self.currentidletime + elapsedTime * 1000
 					if self.currentidletime >= self.idletime then
 						self.state = "fall"
 						self.currentfalltime = 0
 					end
+				elseif self.state == "electric" then
+					self.electricsprite:update()
+					if self.electricsprite.currentFrame == 6 then
+						self.alive = false
+					end
+				end
+			end,
+			triggerelectric = function(self) 
+				self.state = "electric"
+			end,
+			draw = function(self)
+				self.sprite:draw(self.x, self.y, self.rotation, self.scale, 37, 37)
+				if self.state == "electric" then
+					self.electricsprite:draw(self.x, self.y, 0, self.scale, 37, 37)
 				end
 			end
 		}
