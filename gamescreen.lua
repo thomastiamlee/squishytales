@@ -334,12 +334,16 @@ GameScreen = {
 		if self.poof.status == "alive" then
 			self.poof.image:drawcenter(self.squishy.x, self.squishy.y, 0, self.squishy.scale)
 		end
-		love.graphics.setShader(underwatershader)
-		love.graphics.setColor(255, 255, 255)
-		love.graphics.polygon("fill", 0, 0, screenWidth, 0, screenWidth, screenHeight, 0, screenHeight)
-		love.graphics.setShader()
+				
 		if self.gamestate == "ohnoanimation" then
 			self.ohno:drawcenter(screenWidth / 2, self.ohnopos, 0, self.ohnoscale)
+		end
+				
+		if not(self.gamestate == "ohnoanimation") then
+			love.graphics.setShader(underwatershader)
+			love.graphics.setColor(255, 255, 255)
+			love.graphics.polygon("fill", 0, 0, screenWidth, 0, screenWidth, screenHeight, 0, screenHeight)
+			love.graphics.setShader()
 		end
 		-- self:drawdebug()
 	end,
