@@ -48,3 +48,7 @@ function easeOutCubicUtility(t, b, c, d)
 	t = t - 1
 	return c * (t * t * t + 1) + b
 end
+
+function easeInOutSineUtility(t, b, c, d)
+	return -c / 2 * (math.cos(math.pi * t / d) - 1) + b;
+end

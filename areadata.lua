@@ -35,6 +35,11 @@ Wildlife = {
 			local scale = normalize(0.75)
 			o = {
 				name = "greenturtle",
+				range = normalize(100),
+				refpoint = nil,
+				rangetime = 2400,
+				currentrangetime = 0,
+				direction = "down",
 				sprite = MSprite:new(gameSheetImage, 150, 150, 300, 0, 4, 1, 310),
 				scale = scale,
 				hitbox = {
@@ -43,10 +48,33 @@ Wildlife = {
 				},
 				alive = true,
 				spawn = function(self)
+					self.direction = "down"
+					self.currentrangetime = 0
+					self.refpoint = math.random(40 * scale, (screenHeight - 40 * scale) - self.range)
 					self.x = screenWidth + 75 * scale
-					self.y = math.random(40 * scale, screenHeight - 40 * scale)
+					self.y = self.refpoint
 				end,
 				update = function(self)
+					self.currentrangetime = self.currentrangetime + elapsedTime * 1000
+					if self.direction == "down" then
+						if self.currentrangetime > self.rangetime then
+							self.currentrangetime = self.rangetime
+						end
+						self.y = easeInOutSineUtility(self.currentrangetime, self.refpoint, self.range, self.rangetime)
+						if self.currentrangetime == self.rangetime then
+							self.direction = "up"
+							self.currentrangetime = 0
+						end
+					elseif self.direction == "up" then
+						if self.currentrangetime > self.rangetime then
+							self.currentrangetime = self.rangetime
+						end
+						self.y = easeInOutSineUtility(self.currentrangetime, self.refpoint + self.range, -self.range, self.rangetime)
+						if self.currentrangetime == self.rangetime then
+							self.direction = "down"
+							self.currentrangetime = 0
+						end
+					end
 					self.x = self.x - normalize(1)
 					if self.x < -75 * scale then
 						self.alive = false
