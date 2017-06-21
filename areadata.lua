@@ -21,11 +21,33 @@ Wildlife = {
 				},
 				alive = true,
 				spawn = function(self)
-					self.x = screenWidth + normalize(75 * scale)
+					self.x = screenWidth + 75 * scale
 					self.y = math.random(40 * scale, screenHeight - 40 * scale)
 				end,
 				update = function(self)
-					self.x = self.x - 1
+					self.x = self.x - normalize(1)
+					if self.x < -75 * scale then
+						self.alive = false
+					end
+				end
+			}
+		elseif name == "greenturtle" then
+			local scale = normalize(0.75)
+			o = {
+				name = "greenturtle",
+				sprite = MSprite:new(gameSheetImage, 150, 150, 300, 0, 4, 1, 310),
+				scale = scale,
+				hitbox = {
+					love.graphics.newQuad(15, 40, 60, 60, screenWidth, screenHeight),
+					love.graphics.newQuad(80, 60, 55, 40, screenWidth, screenHeight)
+				},
+				alive = true,
+				spawn = function(self)
+					self.x = screenWidth + 75 * scale
+					self.y = math.random(40 * scale, screenHeight - 40 * scale)
+				end,
+				update = function(self)
+					self.x = self.x - normalize(1)
 					if self.x < -75 * scale then
 						self.alive = false
 					end

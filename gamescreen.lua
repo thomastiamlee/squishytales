@@ -184,10 +184,10 @@ GameScreen = {
 		love.audio.play(self.areadata.music)		
 	end,	
 	handlecollisions = function(self)
-		local sl = self.squishy.x - 32 * self.squishy.scale
-		local sr = self.squishy.x + 32 * self.squishy.scale
-		local su = self.squishy.y - 37 * self.squishy.scale
-		local sd = self.squishy.y + 2 * self.squishy.scale
+		local sl = self.squishy.x - 18 * self.squishy.scale
+		local sr = self.squishy.x + 18 * self.squishy.scale
+		local su = self.squishy.y - 27 * self.squishy.scale
+		local sd = self.squishy.y + 0 * self.squishy.scale
 		local i = 1
 		while i <= table.getn(self.enemies) do
 			if self.enemies[i].alive == false then
@@ -225,7 +225,7 @@ GameScreen = {
 	updateenemyspawn = function(self)
 		self.currentspawntime = self.currentspawntime + elapsedTime * 1000
 		if self.currentspawntime >= self.spawntime then
-			local grouper = Wildlife:new("grouper")
+			local grouper = Wildlife:new("greenturtle")
 			grouper:spawn()
 			table.insert(self.enemies, grouper)
 			self.currentspawntime = 0
@@ -316,10 +316,10 @@ GameScreen = {
 		end
 	end,
 	drawdebug = function(self)
-		local sl = self.squishy.x - 32 * self.squishy.scale
-		local sr = self.squishy.x + 32 * self.squishy.scale
-		local su = self.squishy.y - 37 * self.squishy.scale
-		local sd = self.squishy.y + 3 * self.squishy.scale
+		local sl = self.squishy.x - 18 * self.squishy.scale
+		local sr = self.squishy.x + 18 * self.squishy.scale
+		local su = self.squishy.y - 27 * self.squishy.scale
+		local sd = self.squishy.y + 0 * self.squishy.scale
 		love.graphics.setColor(255, 0, 0, 100)
 		love.graphics.polygon('fill', sl, su, sr, su, sr, sd, sl, sd)
 		for i = 1, table.getn(self.enemies), 1 do
