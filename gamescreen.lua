@@ -186,6 +186,10 @@ GameScreen = {
 		self.areadata = data.areadata
 		self.areadata:scroll(0)
 		
+		underwatershader:send("iResolution", {screenWidth, -screenHeight})
+		underwatershader:send("iGlobalTime", 0)
+		self.totalTime = 0
+				
 		love.audio.play(self.areadata.music)		
 	end,	
 	handlecollisions = function(self)
@@ -271,6 +275,8 @@ GameScreen = {
 	end,
 	update = function(self)
 		if self.gamestate == "playing" then
+			self.totalTime = self.totalTime + elapsedTime
+			underwatershader:send("iGlobalTime", self.totalTime)
 			self.areadata:update()
 			self.squishy:update()
 			self.bubble:update(function() self.squishy:push(self.bubble.x, self.bubble.y, self.bubble.scale, self.bubble.growscale) end)
@@ -328,14 +334,13 @@ GameScreen = {
 		if self.poof.status == "alive" then
 			self.poof.image:drawcenter(self.squishy.x, self.squishy.y, 0, self.squishy.scale)
 		end
-		if self.gamestate == "ohnoanimation" then
-			self.ohno:drawcenter(screenWidth / 2, self.ohnopos, 0, self.ohnoscale)
-		end
-		
 		love.graphics.setShader(underwatershader)
 		love.graphics.setColor(255, 255, 255)
 		love.graphics.polygon("fill", 0, 0, screenWidth, 0, screenWidth, screenHeight, 0, screenHeight)
 		love.graphics.setShader()
+		if self.gamestate == "ohnoanimation" then
+			self.ohno:drawcenter(screenWidth / 2, self.ohnopos, 0, self.ohnoscale)
+		end
 		-- self:drawdebug()
 	end,
 	mousepressed = function(self, x, y)

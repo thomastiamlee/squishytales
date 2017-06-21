@@ -196,9 +196,6 @@ SeafloorAreaData = {
 		return o
 	end,
 	scroll = function(self, direction) -- 0 for right, 1 for left
-		underwatershader:send("iResolution", {screenWidth, -screenHeight})
-		underwatershader:send("iGlobalTime", 0)
-		self.totalTime = 0
 		if direction == 0 then
 			self.status = "scrollright"
 		elseif direction == 1 then
@@ -206,8 +203,6 @@ SeafloorAreaData = {
 		end
 	end,
 	update = function(self)
-		self.totalTime = self.totalTime + elapsedTime
-		underwatershader:send("iGlobalTime", self.totalTime)
 		if self.status == "scrollright" then
 			if self.backOffset - self.scrollspeed < -seafloorFrontImage:getWidth() * self.scale + screenWidth then
 				self.status = "scrollleft"
