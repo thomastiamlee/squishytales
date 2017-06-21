@@ -4,12 +4,15 @@ GameScreen = {
 	deadsquishy = nil,
 	bubble = nil,
 	enemies = {},
+	trashes = {},
 	gamestate = nil,
 	-- Area data (level specific information)
 	areadata = nil,
 	-- Level control
 	spawntime = 5000,
 	currentspawntime = 0,
+	trashtime = 5000,
+	currenttrashtime = 0,
 	-- Death animation
 	deathfreezetime = 500,
 	currentdeathfreezetime = nil,
@@ -29,7 +32,7 @@ GameScreen = {
 	init = function(self, data)
 		self.squishy = {
 			image = MSprite:new(gameSheetImage, 75, 75, 0, 0, 7, 1, 100),
-			scale = screenHeight * 0.1 / 75,
+			scale = normalize(0.6),
 			x = screenWidth / 2,
 			y = screenHeight / 2,
 			vx = normalize(0),
@@ -174,6 +177,8 @@ GameScreen = {
 		self.deadsquishy = {
 			image = MSprite:new(gameSheetImage, 75, 75, 300, 1500, 1, 1, 0)
 		}
+		self.currentspawntime = 0
+		self.currenttrashtime = 0
 		self.ohno = Sprite:new(ohnoImage)
 		self.ohnoscale = normalize(0.5)
 		self.ohnopos = -(ohnoImage:getHeight() * self.ohnoscale / 2)
@@ -214,6 +219,12 @@ GameScreen = {
 			end
 			i = i + 1
 		end
+		local j = 1
+		while j <= table.getn(self.trashes) do
+			self.trashes[j].sprite:update()
+			self.trashes[j]:update()
+			j = j + 1
+		end
 	end,
 	triggerdeath = function(self) 
 		self.bubble.status = "none"
@@ -231,6 +242,15 @@ GameScreen = {
 			self.currentspawntime = 0
 		end
 	end,
+	updatetrashspawn = function(self)
+		self.currenttrashtime = self.currenttrashtime + elapsedTime * 1000
+		if self.currenttrashtime >= self.trashtime then
+			local trash = Trash:newrandom()
+			trash:spawn()
+			table.insert(self.trashes, trash)
+			self.currenttrashtime = 0
+		end
+	end,
 	update = function(self)
 		if self.gamestate == "playing" then
 			self.areadata:update()
@@ -238,6 +258,7 @@ GameScreen = {
 			self.bubble:update(function() self.squishy:push(self.bubble.x, self.bubble.y, self.bubble.scale, self.bubble.growscale) end)
 			self:handlecollisions()
 			self:updateenemyspawn()
+			self:updatetrashspawn()
 		elseif self.gamestate == "deathfreeze" then
 			self.currentdeathfreezetime = self.currentdeathfreezetime + elapsedTime * 1000
 			if self.currentdeathfreezetime >= self.deathfreezetime then
@@ -272,6 +293,9 @@ GameScreen = {
 		self.areadata:drawbackground()
 		for i = 1, table.getn(self.enemies), 1 do
 			self.enemies[i].sprite:drawcenter(self.enemies[i].x, self.enemies[i].y, 0, self.enemies[i].scale)
+		end
+		for i = 1, table.getn(self.trashes), 1 do
+			self.trashes[i].sprite:draw(self.trashes[i].x, self.trashes[i].y, self.trashes[i].rotation, self.trashes[i].scale, 37, 37)
 		end
 		if self.gamestate == "deathanimation" or self.gamestate == "ohnoanimation" then
 			love.graphics.setColor(0, 0, 0, self.fadealpha)

@@ -56,11 +56,13 @@ MSprite = {
 			end
 		end
 	end,
-	draw = function(self, x, y, rotation, scale)
+	draw = function(self, x, y, rotation, scale, offsetX, offsetY)
+	  local ox = offsetX or 0
+		local oy = offsetY or 0
 		love.graphics.setColor(255, 255, 255)
 		rotation = rotation or 0
 		scale = scale or 1
-		love.graphics.draw(self.image, self.frames[self.currentFrame], x, y, rotation, scale, scale)
+		love.graphics.draw(self.image, self.frames[self.currentFrame], x, y, rotation, scale, scale, ox, oy)
 	end,
 	drawcenter = function(self, x, y, rotation, scale)
 		love.graphics.setColor(255, 255, 255)

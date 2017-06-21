@@ -1,3 +1,67 @@
+Trash = {
+	x = nil,
+	y = nil,
+	sprite = nil,
+	scale = nil,
+	hitbox = nil,
+	update = nil,
+	rotation = nil,
+	rotationspeed = 2,
+	alive = nil,
+	state = nil,
+	refpost = nil,
+	idletime = 2000,
+	currentidletime = 0,
+	falldistance = 0,
+	falltime = 4500,
+	currentfalltime = 0,
+	newrandom = function(self)
+		randomizer = math.floor(math.random(0, 6.99))
+		scale = normalize(0.6)
+		o = {
+			falldistance = normalize(200),
+			sprite = MSprite:new(gameSheetImage, 75, 75, 150, randomizer, 1, 1, 0),
+			scale = scale,
+			hitbox = love.graphics.newQuad(5, 5, 65, 65, screenWidth, screenHeight),
+			rotation = 0,
+			alive = true,
+			spawn = function(self) 
+				self.x = math.random(normalize(75), screenWidth - normalize(75))
+				self.y = -(75 *  scale)
+				self.state = "fall"
+				self.refpos = self.y
+				self.currentfalltime = 0
+			end,
+			update = function(self)
+				local degrees = math.deg(self.rotation)
+				degrees = (degrees + self.rotationspeed) % 360
+				self.rotation = math.rad(degrees)
+				if self.state == "fall" then
+					self.currentfalltime = self.currentfalltime + elapsedTime * 1000
+					if self.currentfalltime > self.falltime then
+						self.currentfalltime = self.falltime
+					end
+					self.y = easeOutCubicUtility(self.currentfalltime, self.refpos, self.falldistance, self.falltime)
+					if self.currentfalltime == self.falltime then
+						self.state = "idle"
+						self.refpos = self.y
+						self.currentidletime = 0
+					end
+				elseif self.state == "idle" then
+					self.currentidletime = self.currentidletime + elapsedTime * 1000
+					if self.currentidletime >= self.idletime then
+						self.state = "fall"
+						self.currentfalltime = 0
+					end
+				end
+			end
+		}
+		setmetatable(o, self)
+		self.__index = self
+		return o
+	end
+}
+
 Wildlife = {
 	name = nil,
 	x = nil,
