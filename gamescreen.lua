@@ -331,6 +331,11 @@ GameScreen = {
 		if self.gamestate == "ohnoanimation" then
 			self.ohno:drawcenter(screenWidth / 2, self.ohnopos, 0, self.ohnoscale)
 		end
+		
+		love.graphics.setShader(underwatershader)
+		love.graphics.setColor(255, 255, 255)
+		love.graphics.polygon("fill", 0, 0, screenWidth, 0, screenWidth, screenHeight, 0, screenHeight)
+		love.graphics.setShader()
 		-- self:drawdebug()
 	end,
 	mousepressed = function(self, x, y)

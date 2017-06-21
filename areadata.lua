@@ -196,6 +196,9 @@ SeafloorAreaData = {
 		return o
 	end,
 	scroll = function(self, direction) -- 0 for right, 1 for left
+		underwatershader:send("iResolution", {screenWidth, -screenHeight})
+		underwatershader:send("iGlobalTime", 0)
+		self.totalTime = 0
 		if direction == 0 then
 			self.status = "scrollright"
 		elseif direction == 1 then
@@ -203,6 +206,8 @@ SeafloorAreaData = {
 		end
 	end,
 	update = function(self)
+		self.totalTime = self.totalTime + elapsedTime
+		underwatershader:send("iGlobalTime", self.totalTime)
 		if self.status == "scrollright" then
 			if self.backOffset - self.scrollspeed < -seafloorFrontImage:getWidth() * self.scale + screenWidth then
 				self.status = "scrollleft"
@@ -220,13 +225,12 @@ SeafloorAreaData = {
 	drawbackground = function(self)
 		self.backgroundBackSprite:draw(self.backOffset * 0.5, 0, 0, self.scale)
 		--self.backgroundBackSprite:draw(self.backOffset + seafloorBackImage:getWidth(), 0, 0, screenHeight / seafloorBackImage:getHeight())
-		
+				
 		self.backgroundMiddleSprite:draw(self.backOffset * 0.85, 0, 0, self.scale)
 		--self.backgroundMiddleSprite:draw(self.backOffset + seafloorMiddleImage:getWidth(), 0, 0, screenHeight / seafloorMiddleImage:getHeight())
 		
 		self.backgroundFrontSprite:draw(self.backOffset, 0, 0, self.scale)
 		--self.backgroundFrontSprite:draw(self.backOffset + seafloorFrontImage:getWidth(), 0, 0, screenHeight / seafloorFrontImage:getHeight())
 		love.graphics.print(self.backOffset, 10, 10)
-		
 	end
 }
