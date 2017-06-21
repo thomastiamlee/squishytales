@@ -13,6 +13,13 @@ GameScreen = {
 	-- Death animation
 	deathfreezetime = 500,
 	currentdeathfreezetime = nil,
+	fadealpha = 0,
+	fadealphaspeed = 15,
+	ohno = nil,
+	ohnopos = nil,
+	ohnoscale = nil,
+	ohnotime = 650,
+	currentohnotime = 0,
 	new = function(self)
 		o = {}
 		setmetatable(o, self)
@@ -153,6 +160,7 @@ GameScreen = {
 				self.x = x
 				self.y = y
 				self.status = "alive"
+				self.image.currentFrame = 1
 			end,
 			update = function(self)
 				if self.status == "alive" then
@@ -166,6 +174,9 @@ GameScreen = {
 		self.deadsquishy = {
 			image = MSprite:new(gameSheetImage, 75, 75, 300, 1500, 1, 1, 0)
 		}
+		self.ohno = Sprite:new(ohnoImage)
+		self.ohnoscale = normalize(0.5)
+		self.ohnopos = -(ohnoImage:getHeight() * self.ohnoscale / 2)
 		self.gamestate = "playing"
 		self.areadata = data.areadata
 		self.areadata:scroll(0)
@@ -233,9 +244,28 @@ GameScreen = {
 				self.gamestate = "deathanimation"
 				self.poof:spawn()
 				ouchSfx:play()
+				self.fadealpha = 0
 			end
 		elseif self.gamestate == "deathanimation" then
 			self.poof:update()
+			if self.poof.status == "dead" then
+				self.fadealpha = self.fadealpha + self.fadealphaspeed
+				if self.fadealpha >= 255 then
+					self.poof:spawn()
+					self.currentohnotime = 0
+					self.gamestate = "ohnoanimation"
+				end
+			end
+		elseif self.gamestate == "ohnoanimation" then
+			self.poof:update()
+			if self.poof.status == "dead" then
+				self.currentohnotime = self.currentohnotime + elapsedTime * 1000
+				if self.currentohnotime >= self.ohnotime then
+					self.currentohnotime = self.ohnotime
+				end
+				local dist = screenHeight / 2 + (ohnoImage:getHeight() * self.ohnoscale / 2)
+				self.ohnopos = easeOutCubicUtility(self.currentohnotime, -(ohnoImage:getHeight() * self.ohnoscale / 2), dist, self.ohnotime)
+			end
 		end
 	end,
 	draw = function(self)
@@ -243,14 +273,21 @@ GameScreen = {
 		for i = 1, table.getn(self.enemies), 1 do
 			self.enemies[i].sprite:drawcenter(self.enemies[i].x, self.enemies[i].y, 0, self.enemies[i].scale)
 		end
+		if self.gamestate == "deathanimation" or self.gamestate == "ohnoanimation" then
+			love.graphics.setColor(0, 0, 0, self.fadealpha)
+			love.graphics.polygon("fill", 0, 0, screenWidth, 0, screenWidth, screenHeight, 0, screenHeight)
+		end
 		if self.gamestate == "playing" or self.gamestate == "deathfreeze" then
 			self.squishy:draw()
-		elseif self.gamestate == "deathanimation" then
+		elseif self.gamestate == "deathanimation" or self.gamestate == "ohnoanimation" and self.poof.image.currentFrame <= 3 then
 			self.deadsquishy.image:drawcenter(self.squishy.x, self.squishy.y, 0, self.squishy.scale)
 		end
 		self.bubble:draw()
 		if self.poof.status == "alive" then
 			self.poof.image:drawcenter(self.squishy.x, self.squishy.y, 0, self.squishy.scale)
+		end
+		if self.gamestate == "ohnoanimation" then
+			self.ohno:drawcenter(screenWidth / 2, self.ohnopos, 0, self.ohnoscale)
 		end
 		-- self:drawdebug()
 	end,
