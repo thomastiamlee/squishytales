@@ -264,6 +264,64 @@ Wildlife = {
 					end
 				end
 			}
+		elseif name == "redoctopus" then
+			local scale = normalize(0.75)
+			o = {
+				name = "redoctopus",
+				status = nil,
+				range = screenHeight * .6,
+				movetime = 3000,
+				currentmovetime = 0,
+				waittime = 2500,
+				currentwaittime = 0,
+				originheight = nil,
+				sprite = MSprite:new(gameSheetImage, 150, 150, 825, 0, 4, 1, 340),
+				scale = scale,
+				hitbox = {
+					love.graphics.newQuad(38, 13, 66, 86, screenWidth, screenHeight),
+					love.graphics.newQuad(31, 96, 91, 40, screenWidth, screenHeight)
+				},
+				alive = true,
+				spawn = function(self)
+					self.x = math.random(75 * scale + normalize(150), screenWidth - 75 * scale - normalize(150))
+					self.status = "rise"
+					self.currentmovetime = 0
+					self.currenttime = 0
+					self.y = screenHeight + 150 * scale / 2
+					self.originheight = self.y
+				end,
+				update = function(self)
+					if self.status == "rise" then
+						self.currentmovetime = self.currentmovetime + elapsedTime * 1000
+						if self.currentmovetime > self.movetime then
+							self.currentmovetime = self.movetime
+						end
+						self.y = linearUtility(self.currentmovetime, self.originheight, -self.range, self.movetime)
+						if self.currentmovetime == self.movetime then
+							self.status = "wait"
+							self.currentwaittime = 0
+						end
+					elseif self.status == "wait" then
+						self.currentwaittime = self.currentwaittime + elapsedTime * 1000
+						if self.currentwaittime > self.waittime then
+							self.currentwaittime = self.waittime
+						end
+						if self.currentwaittime == self.waittime then
+							self.status = "fall"
+							self.currentmovetime = 0
+						end
+					elseif self.status == "fall" then
+						self.currentmovetime = self.currentmovetime + elapsedTime * 1000
+						if self.currentmovetime > self.movetime then
+							self.currentmovetime = self.movetime
+						end
+						self.y = linearUtility(self.currentmovetime, self.originheight - self.range, self.range, self.movetime)
+						if self.currentmovetime == self.movetime then
+							self.alive = false
+						end
+					end
+				end
+			}
 		end
 		setmetatable(o, self)
 		self.__index = self

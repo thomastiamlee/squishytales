@@ -114,3 +114,7 @@ end
 function easeInOutSineUtility(t, b, c, d)
 	return -c / 2 * (math.cos(math.pi * t / d) - 1) + b;
 end
+
+function linearUtility(t, b, c, d)
+	return c * t / d + b
+end
