@@ -164,6 +164,106 @@ Wildlife = {
 					end
 				end
 			}
+		elseif name == "brownturtle" then
+			local scale = normalize(0.75)
+			o = {
+				name = "brownturtle",
+				range = normalize(200),
+				refpoint = nil,
+				rangetime = 3600,
+				currentrangetime = 0,
+				direction = "down",
+				sprite = MSprite:new(gameSheetImage, 150, 150, 1425, 1200, 4, 1, 310),
+				scale = scale,
+				hitbox = {
+					love.graphics.newQuad(15, 40, 60, 60, screenWidth, screenHeight),
+					love.graphics.newQuad(80, 60, 55, 40, screenWidth, screenHeight)
+				},
+				alive = true,
+				spawn = function(self)
+					self.direction = "down"
+					self.currentrangetime = 0
+					self.refpoint = math.random(40 * scale, (screenHeight - 40 * scale) - self.range)
+					self.x = screenWidth + 75 * scale
+					self.y = self.refpoint
+				end,
+				update = function(self)
+					self.currentrangetime = self.currentrangetime + elapsedTime * 1000
+					if self.direction == "down" then
+						if self.currentrangetime > self.rangetime then
+							self.currentrangetime = self.rangetime
+						end
+						self.y = easeInOutSineUtility(self.currentrangetime, self.refpoint, self.range, self.rangetime)
+						if self.currentrangetime == self.rangetime then
+							self.direction = "up"
+							self.currentrangetime = 0
+						end
+					elseif self.direction == "up" then
+						if self.currentrangetime > self.rangetime then
+							self.currentrangetime = self.rangetime
+						end
+						self.y = easeInOutSineUtility(self.currentrangetime, self.refpoint + self.range, -self.range, self.rangetime)
+						if self.currentrangetime == self.rangetime then
+							self.direction = "down"
+							self.currentrangetime = 0
+						end
+					end
+					self.x = self.x - normalize(1)
+					if self.x < -75 * scale then
+						self.alive = false
+					end
+				end
+			}
+		elseif name == "blackturtle" then
+			local scale = normalize(0.75)
+			o = {
+				name = "brownturtle",
+				range = normalize(300),
+				refpoint = nil,
+				rangetime = 3000,
+				currentrangetime = 0,
+				direction = "down",
+				sprite = MSprite:new(gameSheetImage, 150, 150, 1275, 1200, 4, 1, 310),
+				scale = scale,
+				hitbox = {
+					love.graphics.newQuad(15, 40, 60, 60, screenWidth, screenHeight),
+					love.graphics.newQuad(80, 60, 55, 40, screenWidth, screenHeight)
+				},
+				alive = true,
+				spawn = function(self)
+					self.direction = "down"
+					self.currentrangetime = 0
+					self.refpoint = math.random(40 * scale, (screenHeight - 40 * scale) - self.range)
+					self.x = screenWidth + 75 * scale
+					self.y = self.refpoint
+				end,
+				update = function(self)
+					self.currentrangetime = self.currentrangetime + elapsedTime * 1000
+					if self.direction == "down" then
+						if self.currentrangetime > self.rangetime then
+							self.currentrangetime = self.rangetime
+						end
+						self.y = easeInOutSineUtility(self.currentrangetime, self.refpoint, self.range, self.rangetime)
+						if self.currentrangetime == self.rangetime then
+							self.direction = "up"
+							self.currentrangetime = 0
+						end
+					elseif self.direction == "up" then
+						if self.currentrangetime > self.rangetime then
+							self.currentrangetime = self.rangetime
+						end
+						self.y = easeInOutSineUtility(self.currentrangetime, self.refpoint + self.range, -self.range, self.rangetime)
+						if self.currentrangetime == self.rangetime then
+							self.direction = "down"
+							self.currentrangetime = 0
+						end
+					end
+					self.x = self.x - normalize(1.5)
+					if self.x < -75 * scale then
+						self.alive = false
+					end
+				end
+			}
 		end
 		setmetatable(o, self)
 		self.__index = self
