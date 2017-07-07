@@ -258,7 +258,7 @@ GameScreen = {
 	updateenemyspawn = function(self)
 		self.currentspawntime = self.currentspawntime + elapsedTime * 1000
 		if self.currentspawntime >= self.spawntime then
-			local grouper = Wildlife:new("redoctopus")
+			local grouper = Wildlife:new("blueoctopus")
 			grouper:spawn()
 			table.insert(self.enemies, grouper)
 			self.currentspawntime = 0
