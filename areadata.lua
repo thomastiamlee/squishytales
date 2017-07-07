@@ -382,6 +382,78 @@ Wildlife = {
 					end
 				end
 			}
+		elseif name == "swordfish" then
+			local scale = normalize(0.75)
+			o = {
+				name = "swordfish",
+				sprite = MSprite:new(gameSheetImage, 225, 75, 975, 0, 4, 1, 280),
+				status = nil,
+				origin = nil,
+				entertime = 200,
+				currententertime = 0,
+				waittime = 1200,
+				currentwaittime = 0,
+				chargetime = 450,
+				currentchargetime = 0,
+				attacktime = 1500,
+				currentattacktime = 0,
+				scale = scale,
+				hitbox = {
+					love.graphics.newQuad(2, 31, 90, 13, screenWidth, screenHeight),
+					love.graphics.newQuad(90, 6, 115, 57, screenWidth, screenHeight)
+				},
+				alive = true,
+				spawn = function(self)
+					self.x = screenWidth + 225 * scale / 2
+					self.y = math.random(normalize(40), screenHeight - normalize(40))
+					self.status = "enter"
+					self.currententertime = 0
+					self.origin = self.x
+				end,
+				update = function(self)
+					if self.status == "enter" then
+						self.currententertime = self.currententertime + elapsedTime * 1000
+						if self.currententertime > self.entertime then
+							self.currententertime = self.entertime
+						end
+						self.x = linearUtility(self.currententertime, self.origin, -normalize(120 * scale), self.entertime)
+						if self.currententertime == self.entertime then
+							self.status = "wait"
+							self.currentwaittime = 0
+						end
+					elseif self.status == "wait" then
+						self.currentwaittime = self.currentwaittime + elapsedTime * 1000
+						if self.currentwaittime > self.waittime then
+							self.currentwaittime = self.waittime
+						end	
+						if self.currentwaittime == self.waittime then
+							self.status = "charge"
+							self.currentchargetime = 0
+							self.origin = self.x
+						end
+					elseif self.status == "charge" then
+						self.currentchargetime = self.currentchargetime + elapsedTime * 1000
+						if self.currentchargetime > self.chargetime then
+							self.currentchargetime = self.chargetime
+						end
+						self.x = easeInOutSineUtility(self.currentchargetime, self.origin, normalize(70 * scale), self.chargetime)
+						if self.currentchargetime == self.chargetime then
+							self.status = "attack"
+							self.currentattacktime = 0
+							self.origin = self.x
+						end
+					elseif self.status == "attack" then
+						self.currentattacktime = self.currentattacktime + elapsedTime * 1000
+						if self.currentattacktime > self.attacktime then
+							self.currentattacktime = self.attacktime
+						end
+						self.x = easeInOutSineUtility(self.currentattacktime, self.origin, -(225 * scale) - self.origin, self.attacktime)
+						if self.currentattacktime == self.attacktime then
+							self.alive = false
+						end
+					end
+				end
+			}
 		end
 		setmetatable(o, self)
 		self.__index = self
